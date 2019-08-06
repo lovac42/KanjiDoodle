@@ -1,0 +1,8 @@
+<div id="canvas_wrapper">
+    <div id="pencil_button_bar">
+        <input type="button" onclick="switch_visibility();switch_class(this,'active');" value="✍" title="Toggle visiblity">
+        <input type="button" onclick="ts_undo();" value="↶" title="Undo the last stroke" id="ts_undo_button">
+        <input type="button" class="active" onclick="clear_canvas();" value="✕" title="Clean whiteboard">
+    </div>
+    <canvas id="ts_canvas" width="500px" height="500px"></canvas>
+</div>

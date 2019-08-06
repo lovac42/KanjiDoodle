@@ -1,0 +1,63 @@
+/*
+*  Copyright (C) 2019 Lovac42
+*  Copyright (C) 2018-2019 Michal Krassowski <krassowski.michal@gmail.com>
+*  Support: https://github.com/lovac42/TouchScreenEvo
+*  License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
+*/
+
+#ts_canvas {
+    position:absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 999;
+}
+
+#ts_canvas {
+    opacity: "0.70";
+}
+
+.night_mode #pencil_button_bar input[type=button].active {
+    -webkit-filter: grayscale(0);
+    filter: none;
+    color: #fff!important;
+}
+
+#pencil_button_bar input[type=button].active {
+    -webkit-filter: grayscale(0);
+    filter: none;
+    color: black!important;
+}
+
+#pencil_button_bar{
+    position: fixed;
+    top: 1px;
+    right: 1px;
+    z-index: 1000;
+    font-family: "Arial Unicode MS", unifont, "Everson Mono", tahoma, arial;
+}
+
+#pencil_button_bar input[type=button] {
+    filter: gray;
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+    border: 1px solid silver;
+    margin: 0 1px;
+    display: inline-block;
+    float: left;
+    width: 90px!important;
+    font-size: 130%;
+    line-height: 130%;
+    height: 40px;
+    border-radius: 8px;
+    background-color: rgba(250,250,250,0.5)!important;
+    color: #ccc!important;
+    -webkit-text-size-adjust:none;
+    text-size-adjust:none;
+}
+
+.night_mode #pencil_button_bar input[type=button] {
+    background-color: rgba(10,10,10,0.5)!important;
+    border-color: #ccc;
+    color: #444!important;
+    text-shadow: 0 0 1px rgba(5, 5, 5, 0.9);
+}
