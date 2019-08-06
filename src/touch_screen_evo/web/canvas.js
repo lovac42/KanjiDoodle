@@ -153,11 +153,9 @@ canvas.addEventListener(DEVICE+"move", function (e) {
 });
 
 
+setTimeout(resize,0); //sets init card in reviewer
 window.addEventListener('resize', resize);
-document.body.addEventListener('load',function(){
-    setTimeout(resize,10);
-},false);
-
+document.body.addEventListener('load', resize);
 
 
 // Uses requestAnimationFrame to animate
