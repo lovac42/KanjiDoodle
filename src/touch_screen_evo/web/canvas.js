@@ -10,8 +10,9 @@ var visible = false;
 var isMouseDown = false;
 var pos = {x:0, y:0};
 var lst_pos = {x:0, y:0};
-var arrays_of_points = [];
+var op_stack = [];
 
+var ts_save_button = document.getElementById('ts_save_button');
 var ts_undo_button = document.getElementById('ts_undo_button');
 var canvas = document.getElementById('ts_canvas');
 var ctx = canvas.getContext('2d');
@@ -25,15 +26,22 @@ function update_pen_settings() {
     ctx.lineJoin = ctx.lineCap = 'round';
     ctx.lineWidth = ts_width;
     ctx.strokeStyle = ts_color;
+    // ctx.fillStyle = ts_color;
 }
 
-function switch_visibility() {
-    if(visible) {
-        canvas.style.display = 'none';
-    } else {
-        canvas.style.display = 'block';
+function change_color(){
+    tsCallback.chooseColor();
+}
+
+function change_stroke(){
+    tsCallback.chooseWidth();
+}
+
+function save_canvas(){
+    if(ts_save_button.className==="active"){
+        data=canvas.toDataURL('image/png',1);
+        tsCallback.saveCanvas(data);
     }
-    visible = !visible;
 }
 
 function switch_off_buttons(turn_off) {
@@ -45,12 +53,19 @@ function switch_off_buttons(turn_off) {
     }
 }
 
-function switch_class(e, c) {
-    var reg = new RegExp('(\\\s|^)' + c + '(\\s|$)');
-    if(e.className.match(new RegExp('(\\s|^)' + c + '(\\s|$)'))) {
-        e.className = e.className.replace(reg, '');
-    } else {
-        e.className += c;
+function init_visibility() {
+    el=document.getElementById('ts_toggle_button');
+    switch_visibility(el);
+}
+
+function switch_visibility(el) {
+    visible = !visible;
+    if(visible){
+        canvas.style.display = 'block';
+        if(el) $(el).addClass('active').siblings().css({"display":"inherit"});
+    }else{
+        canvas.style.display = 'none';
+        if(el) $(el).removeClass('active').siblings().css({"display":"none"});
     }
 }
 
@@ -69,15 +84,17 @@ function resize() {
 
 function clear_canvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    arrays_of_points = [];
+    op_stack = [];
     ts_undo_button.className = "";
+    ts_save_button.className = "";
     canvas.style.display = 'block';
 }
 
 function ts_undo() {
-    arrays_of_points.pop()
-    if(!arrays_of_points.length) {
+    op_stack.pop()
+    if(!op_stack.length) {
         ts_undo_button.className = "";
+        ts_save_button.className = "";
     }
     canvas.style.display = 'block';
     ts_redraw()
@@ -92,20 +109,23 @@ function midPointBtw(p1, p2) {
 
 function ts_redraw() {
     ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-    update_pen_settings();
-    for(var p=0; p<arrays_of_points.length; p++) {
-        var p1 = arrays_of_points[p][0];
-        var p2 = arrays_of_points[p][1];
+    // update_pen_settings();
+    for(var p=0; p<op_stack.length; p++) {
+        ctx.strokeStyle = op_stack[p][0][0];
+        ctx.lineWidth = op_stack[p][0][1];
+        var p1 = op_stack[p][1];
+        var p2 = op_stack[p][2];
         ctx.beginPath();
         ctx.moveTo(p1.x, p1.y);
-        for(var i=1,L=arrays_of_points[p].length; i<L; i++) {
+        for(var i=2,L=op_stack[p].length; i<L; i++) {
             var mp = midPointBtw(p1, p2);
             ctx.quadraticCurveTo(p1.x, p1.y,mp.x,mp.y);
-            p1 = arrays_of_points[p][i];
-            p2 = arrays_of_points[p][i+1];
+            p1 = op_stack[p][i];
+            p2 = op_stack[p][i+1];
         }
         ctx.lineTo(p1.x, p1.y);
         ctx.stroke();
+        // ctx.fill();
     }
 }
 
@@ -120,6 +140,9 @@ function getMousePos(e) {
     return {x:e.offsetX, y:e.offsetY};
 }
 
+$('input').on(DEVICE+'down', function(e) {
+    e.preventDefault(); //prevent focus on btn clicks
+});
 
 window.addEventListener(DEVICE+"up", function (e) {
     isMouseDown = false;
@@ -135,20 +158,24 @@ canvas.addEventListener(DEVICE+"down", function (e) {
     if(!visible || e.which!==1) return;
     e.preventDefault();
     isMouseDown = true;
+    update_pen_settings();
     lst_pos=pos=getMousePos(e);
-    var dot={x:pos.x-1,y:pos.y-1};
-    arrays_of_points.push(new Array());
-    arrays_of_points[arrays_of_points.length-1].push(dot);
-    arrays_of_points[arrays_of_points.length-1].push(pos);
+    var dot={x:pos.x,y:pos.y-1};
+    op_stack.push(new Array());
+    lst=op_stack.length-1 //dynamic
+    op_stack[lst].push([ts_color,ts_width]);
+    op_stack[lst].push(dot);
+    op_stack[lst].push(pos);
     ts_draw(dot.x,dot.y,pos.x,pos.y);
     ts_undo_button.className = "active";
-    update_pen_settings();
+    ts_save_button.className = "active";
 });
 
 canvas.addEventListener(DEVICE+"move", function (e) {
     if(isMouseDown && visible) {
         pos=getMousePos(e);
-        arrays_of_points[arrays_of_points.length-1].push(pos);
+        lst=op_stack.length-1 //dynamic
+        op_stack[lst].push(pos);
     }
 });
 

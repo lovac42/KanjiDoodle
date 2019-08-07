@@ -5,6 +5,10 @@
 
 
 import os
+import base64
+from anki.utils import intTime
+from aqt import mw
+
 
 def readFile(fname):
     addon,_=os.path.split(__file__)
@@ -12,3 +16,18 @@ def readFile(fname):
     if os.path.exists(path):
         with open(path, 'r', encoding='utf-8') as f:
             return f.read()
+
+def importDataURL(txt):
+    b64dat=txt[22:].strip()
+    dat=base64.b64decode(b64dat,validate=True)
+    fname="%s%d.png"%("canvas",intTime())
+    return mw.col.media.writeData(fname,dat)
+
+def saveCanvasAsPNG(card, field, data):
+    fileName=importDataURL(data)
+    n=card.note()
+    n[field]+='<img src="%s">'%fileName
+    n.flush()
+    #Force refresh w/o loosing card
+    mw.reviewer.card=mw.col.getCard(card.id)
+    mw.reviewer._showQuestion()

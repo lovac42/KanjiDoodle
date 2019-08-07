@@ -9,6 +9,9 @@ from aqt import mw
 from aqt.qt import *
 from anki.lang import _
 
+from .forms import getfield
+from .utils import saveCanvasAsPNG
+
 
 def chooseColor():
     cor=mw.pm.profile.get('ts_color',"#f0f")
@@ -22,8 +25,12 @@ def chooseColor():
 
 def chooseWidth():
     width=mw.pm.profile.get('ts_width',5)
-    val,ok=QInputDialog.getDouble(mw,"Touch Screen","Enter the width:",width)
+    val,ok=QInputDialog.getDouble(mw,
+        "Touch Screen","Enter the width:",
+        width,min=0.1,max=250
+    )
     if ok:
+        val=max(0.1,val)
         mw.pm.profile['ts_width']=val
         if mw.state=='review':
             mw.reviewer.web.eval("ts_width='%s';update_pen_settings();"%val)
@@ -40,3 +47,19 @@ def chooseOpacity():
         mw.pm.profile['ts_opacity']=op
         if mw.state=='review':
             mw.reviewer.web.eval("canvas.style.opacity=%s;"%str(op))
+
+def chooseSaveField(data):
+    card=mw.reviewer.card
+    if card:
+        diag=QDialog(mw)
+        form=getfield.Ui_Dialog()
+        form.setupUi(diag)
+        fields=[f['name'] for f in card.model()['flds']]
+        form.fields.addItems(fields)
+        diag.show()
+        #If errors occur on linux, see old bug (qt4.8.4 or below)
+        #https://bugreports.qt-project.org/browse/QTBUG-1894
+        form.fields.showPopup()
+        if diag.exec_():
+            fieldName=fields[form.fields.currentIndex()]
+            saveCanvasAsPNG(card,fieldName,data)

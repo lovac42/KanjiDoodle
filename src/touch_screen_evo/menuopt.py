@@ -30,24 +30,25 @@ class Menu:
         subMenu=QMenu('&Touchscreen',menu)
 
         self.mSwitch=QAction(_('&Enable Touch Screen'),mw,checkable=True)
-        hotkey=self.config.get('hotkey','Ctrl+R')
-        self.mSwitch.setShortcut(QKeySequence(hotkey))
+        hotkey=self.config.get('hotkey')
+        if hotkey:
+            self.mSwitch.setShortcut(QKeySequence(hotkey))
         self.mSwitch.triggered.connect(self.toggleState)
 
-        self.mColor = QAction(_('Set &pen color'),mw)
+        self.mOpacity = QAction(_('Set Canvas &Opacity'),mw)
+        self.mOpacity.triggered.connect(chooseOpacity)
+
+        self.mColor = QAction(_('Set &Pen Color'),mw)
         self.mColor.triggered.connect(chooseColor)
 
-        self.mWidth = QAction(_('Set pen &width'),mw)
+        self.mWidth = QAction(_('Set Pen &Width'),mw)
         self.mWidth.triggered.connect(chooseWidth)
-
-        self.mOpacity = QAction(_('Set pen &opacity'),mw)
-        self.mOpacity.triggered.connect(chooseOpacity)
 
         subMenu.addAction(self.mSwitch)
         subMenu.addSeparator()
+        subMenu.addAction(self.mOpacity)
         subMenu.addAction(self.mColor)
         subMenu.addAction(self.mWidth)
-        subMenu.addAction(self.mOpacity)
         menu.addMenu(subMenu)
 
 

@@ -8,12 +8,12 @@
 from aqt import mw
 from anki.lang import _
 from anki.hooks import addHook, wrap
-from anki.template import Template
 from aqt.reviewer import Reviewer
 from aqt.qt import *
 
-from .const import ADDON_NAME
+from .const import ADDON_NAME, CCBC as isCCBC
 from .config import Config
+from .callbacks import Callback
 from .menuopt import Menu
 from .const import *
 
@@ -30,32 +30,68 @@ class TouchScreen:
     def onConfigLoaded(self):
         if not self.state:
             self.state=Menu(self.config)
+        self.setupCallbacks()
+
+    def setupCallbacks(self):
+        self.tsCallback=Callback()
+        if isCCBC:
+            self.addCallback=mw.reviewer.web.page().mainFrame().addToJavaScriptWindowObject
+        else:
+            self.loadUserScript()
+        self.eval=mw.reviewer.web.eval
+
+    def loadUserScript(self):
+        mw.reviewer.web.page()._channel.registerObject("tsCallback",self.tsCallback)
+        js = QFile(':/qtwebchannel/qwebchannel.js')
+        assert js.open(QIODevice.ReadOnly)
+        js = bytes(js.readAll()).decode('utf-8')
+
+        script=QWebEngineScript()
+        script.setInjectionPoint(QWebEngineScript.DocumentCreation)
+        script.setWorldId(QWebEngineScript.MainWorld)
+        script.setName("qwebchannel.js");
+        script.setRunsOnSubFrames(False)
+
+        # TODO: fix channel error
+        # Uncaught TypeError: channel.execCallbacks[message.id]
+        # is not a function
+        script.setSourceCode(js+'''
+var tsCallback;
+var chooseColor;
+var chooseWidth;
+var saveCanvas;
+new QWebChannel(qt.webChannelTransport, function(channel) {
+    try{
+        tsCallback=channel.objects.tsCallback;
+        chooseColor=channel.objects.tsCallback.chooseColor;
+        chooseWidth=channel.objects.tsCallback.chooseWidth;
+        saveCanvas=channel.objects.tsCallback.saveCanvas;
+    }catch(TypeError){;}
+});
+        ''')
+        mw.reviewer.web.page().profile().scripts().insert(script)
 
     def onShowQuestion(self):
+        if isCCBC:
+            self.addCallback("tsCallback", self.tsCallback)
+
         if self.state.isEnabled():
-            mw.reviewer.web.eval('clear_canvas();')
+            self.eval('clear_canvas();')
             op=mw.pm.profile.get('ts_opacity',0.7)
-            mw.reviewer.web.eval("canvas.style.opacity=%s;"%str(op))
+            self.eval("canvas.style.opacity=%s;"%str(op))
 
-            #hack to fix canvas blocking text selection on init load
-            mw.reviewer.web.eval('switch_visibility();')
-            mw.reviewer.web.eval('switch_visibility();')
+            # Hack: toggle on/off to fix canvas blocking
+            # text selection on init load
+            self.eval('init_visibility();')
+            self.eval('init_visibility();')
         else:
-            mw.reviewer.web.eval('switch_off_buttons(true);')
+            self.eval('switch_off_buttons(true);')
 
-ts=TouchScreen()
-
-
-
-def revHtml(rev, _old):
-    body=_old(rev)
-    c="var ts_color='%s';"%mw.pm.profile.get('ts_color','#f0f')
-    w="var ts_width='%s';"%mw.pm.profile.get('ts_width','5')
-    body="""
-<style>%s</style>%s%s
+    def getBody(self):
+        c="var ts_color='%s';"%mw.pm.profile.get('ts_color','#f0f')
+        w="var ts_width='%s';"%mw.pm.profile.get('ts_width','5')
+        return """
+<style>%s</style>%s
 <script>%s%s%s%s</script>
-"""%(CSS,HTML,body,DEVICE,c,w,JS)
-    return body
-
-Reviewer.revHtml = wrap(Reviewer.revHtml, revHtml, 'around')
+"""%(CSS,HTML,DEVICE,c,w,JS)
 
