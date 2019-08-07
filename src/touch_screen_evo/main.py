@@ -82,8 +82,7 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
 
             # Hack: toggle on/off to fix canvas blocking
             # text selection on init load
-            self.eval('init_visibility();')
-            self.eval('init_visibility();')
+            self.eval('init_visibility();init_visibility();')
         else:
             self.eval('switch_off_buttons(true);')
 

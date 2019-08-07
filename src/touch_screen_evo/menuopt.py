@@ -62,7 +62,7 @@ class Menu:
 
         if mw.state=='review':
             s='false' if state else 'true'
-            mw.reviewer.web.eval('switch_off_buttons(%s);'%s)
+            mw.reviewer.web.eval('switch_off_buttons(%s);init_visibility();'%s)
 
 
     def initState(self):
