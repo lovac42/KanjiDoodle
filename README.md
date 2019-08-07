@@ -1,7 +1,7 @@
 ## TouchScreenEvo: For drawing and writing
 
 ### About:
-Touch screen functionality for Anki
+Touch screen functionality for Anki. Featured changes include changing colors, changing pen size, and saving. It will only save the drawings and not the background images. If you want everything saved, then just take a screenshot.
 
 
 ### Addon Conflict:
