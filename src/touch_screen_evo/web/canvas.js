@@ -71,23 +71,26 @@ function switch_visibility(el) {
 
 function resize() {
     var card = document.getElementsByClassName('card')[0]
-    ctx.canvas.width = document.documentElement.scrollWidth - 1;
-    ctx.canvas.height = Math.max(
-        document.body.clientHeight,
-        window.innerHeight,
-        document.documentElement ? document.documentElement.scrollHeight :
-        0,
-        card ? card.scrollHeight : 0
-    ) - 1;
+    // ctx.canvas.width = document.documentElement.scrollWidth - 1;
+    // ctx.canvas.height = Math.max(
+        // document.body.clientHeight,
+        // window.innerHeight,
+        // document.documentElement ? document.documentElement.scrollHeight : 0,
+        // card ? card.scrollHeight : 0
+    // ) - 1;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     ts_redraw()
 }
 
 function clear_canvas() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    op_stack = [];
-    ts_undo_button.className = "";
-    ts_save_button.className = "";
-    canvas.style.display = 'block';
+    if(op_stack.length){
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        op_stack = [];
+        ts_undo_button.className = "";
+        ts_save_button.className = "";
+        canvas.style.display = 'block';
+    }
 }
 
 function ts_undo() {
