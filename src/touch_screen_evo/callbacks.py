@@ -8,6 +8,7 @@ from aqt.qt import *
 from anki.hooks import runHook
 
 from .menucmd import chooseColor, chooseWidth, chooseSaveField
+from .const import ADDON_NAME
 
 
 class Callback(QObject):
@@ -26,4 +27,4 @@ class Callback(QObject):
     @pyqtSlot(bool)
     def signal(self, tf):
         "Signal timer addons to pause while drawing"
-        runHook("TouchScreenEvo.draw",tf)
+        runHook(ADDON_NAME+".draw",tf)
