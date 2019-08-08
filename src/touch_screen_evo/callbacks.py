@@ -5,6 +5,7 @@
 
 from aqt import mw
 from aqt.qt import *
+from anki.hooks import runHook
 
 from .menucmd import chooseColor, chooseWidth, chooseSaveField
 
@@ -21,3 +22,8 @@ class Callback(QObject):
     @pyqtSlot(str)
     def saveCanvas(self, data):
         chooseSaveField(data)
+
+    @pyqtSlot(bool)
+    def signal(self, tf):
+        "Signal timer addons to pause while drawing"
+        runHook("TouchScreenEvo.draw",tf)

@@ -12,6 +12,8 @@ var pos = {x:0, y:0};
 var lst_pos = {x:0, y:0};
 var op_stack = [];
 
+var canvas_wrapper = document.getElementById('canvas_wrapper');
+var ts_toggle_button = document.getElementById('ts_toggle_button');
 var ts_save_button = document.getElementById('ts_save_button');
 var ts_undo_button = document.getElementById('ts_undo_button');
 var canvas = document.getElementById('ts_canvas');
@@ -45,28 +47,31 @@ function save_canvas(){
 }
 
 function switch_off_buttons(turn_off) {
-    var el=document.getElementById('canvas_wrapper');
     if(turn_off){
-        el.style.display = 'none';
+        canvas_wrapper.style.display = 'none';
+        tsCallback.signal(false);
     } else {
-        el.style.display = 'block';
+        canvas_wrapper.style.display = 'block';
+        tsCallback.signal(visible);
     }
 }
 
-function init_visibility() {
-    el=document.getElementById('ts_toggle_button');
-    switch_visibility(el);
+function init_visibility(signal) {
+    switch_visibility(signal);
 }
 
-function switch_visibility(el) {
+function switch_visibility(signal) {
     visible = !visible;
     if(visible){
         canvas.style.display = 'block';
-        if(el) $(el).addClass('active').siblings().css({"display":"inherit"});
+        $(ts_toggle_button).addClass('active').siblings().css({"display":"inherit"});
     }else{
         canvas.style.display = 'none';
-        if(el) $(el).removeClass('active').siblings().css({"display":"none"});
+        $(ts_toggle_button).removeClass('active').siblings().css({"display":"none"});
     }
+
+    if(signal)
+        tsCallback.signal(visible);
 }
 
 function resize() {

@@ -23,7 +23,7 @@
 #pencil_button_bar input[type=button].active {
     -webkit-filter: grayscale(0);
     filter: none;
-    color: rgba(0,0,0,0.6)!important;
+    color: rgba(0,0,0,0.65)!important;
 }
 
 #pencil_button_bar{

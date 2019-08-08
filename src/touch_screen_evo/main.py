@@ -60,12 +60,14 @@ var tsCallback;
 var chooseColor;
 var chooseWidth;
 var saveCanvas;
+var signal;
 new QWebChannel(qt.webChannelTransport, function(channel) {
     try{
         tsCallback=channel.objects.tsCallback;
         chooseColor=channel.objects.tsCallback.chooseColor;
         chooseWidth=channel.objects.tsCallback.chooseWidth;
         saveCanvas=channel.objects.tsCallback.saveCanvas;
+        signal=channel.objects.tsCallback.signal;
     }catch(TypeError){;}
 });
         ''')
@@ -83,7 +85,7 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
 
             # Hack: toggle on/off to fix canvas blocking
             # text selection on init load
-            self.eval('init_visibility();init_visibility();')
+            self.eval('init_visibility(false);init_visibility(true);')
         else:
             self.eval('switch_off_buttons(true);')
 
