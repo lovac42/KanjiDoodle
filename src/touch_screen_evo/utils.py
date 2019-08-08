@@ -30,4 +30,5 @@ def saveCanvasAsPNG(card, field, data):
     n.flush()
     #Force refresh w/o loosing card
     mw.reviewer.card=mw.col.getCard(card.id)
+    mw.reviewer.card.startTimer()
     mw.reviewer._showQuestion()
