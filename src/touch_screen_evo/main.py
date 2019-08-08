@@ -77,7 +77,7 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
         if isCCBC:
             self.addCallback("tsCallback", self.tsCallback)
 
-        self.eval('clear_canvas();')
+        self.eval('clear_canvas(true);')
 
         if self.state.isEnabled():
             op=mw.pm.profile.get('ts_opacity',0.7)

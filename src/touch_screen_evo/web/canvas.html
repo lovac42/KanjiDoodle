@@ -1,13 +1,13 @@
 <div id="canvas_wrapper">
     <div id="pencil_button_bar">
-        <input type="button" class="active" onclick="clear_canvas();" value="✕" title="Clean Whiteboard">
-        <input type="button" onclick="switch_visibility(true);" value="✍" title="Toggle visiblity" id="ts_toggle_button">
+        <input type="button" class="active" onclick="clear_canvas();" accesskey="x" value="✕" title="Clean Whiteboard (Alt+X)">
+        <input type="button" onclick="switch_visibility(true);" accesskey="d" value="✍" title="Toggle Visiblity (Alt+D)" id="ts_toggle_button">
         <label></label>
-        <input type="button" onclick="ts_undo();" value="↶" title="Undo the last stroke" id="ts_undo_button">
-        <input type="button" value="儲" onclick="save_canvas();" title="Save As Image" id="ts_save_button">
+        <input type="button" onclick="ts_undo();" accesskey="z" value="↶" title="Undo the last stroke (Alt+Z)" id="ts_undo_button">
+        <input type="button" value="儲" onclick="save_canvas();" accesskey="a" title="Save As Image (Alt+A)" id="ts_save_button">
         <label></label>
-        <input type="button" class="active" onclick="change_color();" value="C" title="Change Color">
-        <input type="button" class="active" onclick="change_stroke();" value="ܙ" title="Change Size">
+        <input type="button" class="active" onclick="change_color();" accesskey="c" value="C" title="Change Color (Alt+C)">
+        <input type="button" class="active" onclick="change_stroke();" accesskey="s" value="ܙ" title="Change Size (Alt+S)">
     </div>
     <canvas id="ts_canvas" width="500px" height="500px"></canvas>
 </div>

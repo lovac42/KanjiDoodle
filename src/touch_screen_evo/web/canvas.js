@@ -32,11 +32,15 @@ function update_pen_settings() {
 }
 
 function change_color(){
-    tsCallback.chooseColor();
+    if(visible){
+        tsCallback.chooseColor();
+    }
 }
 
 function change_stroke(){
-    tsCallback.chooseWidth();
+    if(visible){
+        tsCallback.chooseWidth();
+    }
 }
 
 function save_canvas(){
@@ -88,17 +92,20 @@ function resize() {
     ts_redraw()
 }
 
-function clear_canvas() {
-    if(op_stack.length){
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        op_stack = [];
-        ts_undo_button.className = "";
-        ts_save_button.className = "";
-        canvas.style.display = 'block';
+function clear_canvas(reset) {
+    if(visible || reset){
+        if(op_stack.length){
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            op_stack = [];
+            ts_undo_button.className = "";
+            ts_save_button.className = "";
+            canvas.style.display = 'block';
+        }
     }
 }
 
 function ts_undo() {
+    if(!visible) return;
     op_stack.pop()
     if(!op_stack.length) {
         ts_undo_button.className = "";
