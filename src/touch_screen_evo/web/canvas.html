@@ -1,10 +1,11 @@
 <div id="canvas_wrapper">
+    <div id="ts_crop_field" hidden></div>
     <div id="pencil_button_bar">
         <input type="button" class="active" onclick="clear_canvas();" accesskey="x" value="✕" title="Clean Whiteboard (Alt+X)">
         <input type="button" onclick="switch_visibility(true);" accesskey="d" value="✍" title="Toggle Visiblity (Alt+D)" id="ts_toggle_button">
         <label></label>
         <input type="button" onclick="ts_undo();" accesskey="z" value="↶" title="Undo the last stroke (Alt+Z)" id="ts_undo_button">
-        <input type="button" value="儲" onclick="save_canvas();" accesskey="a" title="Save As Image (Alt+A)" id="ts_save_button">
+        <input type="button" value="儲" onclick="crop_canvas();" accesskey="a" title="Save As Image (Alt+A)" id="ts_save_button">
         <label></label>
         <input type="button" class="active" onclick="change_color();" accesskey="c" value="C" title="Change Color (Alt+C)">
         <input type="button" class="active" onclick="change_stroke();" accesskey="s" value="ܙ" title="Change Size (Alt+S)">

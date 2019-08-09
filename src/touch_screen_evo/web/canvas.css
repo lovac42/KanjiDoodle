@@ -14,6 +14,11 @@
     display: block;
 }
 
+#ts_crop_field {
+    border: 2px dotted red;
+    position: absolute;
+}
+
 .night_mode #pencil_button_bar input[type=button].active {
     -webkit-filter: grayscale(0);
     filter: none;

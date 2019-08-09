@@ -5,6 +5,7 @@
 
 from aqt import mw
 from aqt.qt import *
+from aqt.utils import tooltip
 from anki.hooks import runHook
 
 from .menucmd import chooseColor, chooseWidth, chooseSaveField
@@ -23,6 +24,10 @@ class Callback(QObject):
     @pyqtSlot(str)
     def saveCanvas(self, data):
         chooseSaveField(data)
+
+    @pyqtSlot(str)
+    def tooltip(self, msg):
+        tooltip(msg)
 
     @pyqtSlot(bool)
     def signal(self, tf):

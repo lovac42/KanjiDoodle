@@ -60,6 +60,7 @@ var tsCallback;
 var chooseColor;
 var chooseWidth;
 var saveCanvas;
+var tooltip;
 var signal;
 new QWebChannel(qt.webChannelTransport, function(channel) {
     try{
@@ -67,6 +68,7 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
         chooseColor=channel.objects.tsCallback.chooseColor;
         chooseWidth=channel.objects.tsCallback.chooseWidth;
         saveCanvas=channel.objects.tsCallback.saveCanvas;
+        tooltip=channel.objects.tsCallback.tooltip;
         signal=channel.objects.tsCallback.signal;
     }catch(TypeError){;}
 });

@@ -7,12 +7,14 @@
 // console.log("device="+DEVICE);
 
 var visible = false;
+var saveMode = false;
 var isMouseDown = false;
 var pos = {x:0, y:0};
 var lst_pos = {x:0, y:0};
 var op_stack = [];
 
 var canvas_wrapper = document.getElementById('canvas_wrapper');
+var ts_crop_field = document.getElementById('ts_crop_field');
 var ts_toggle_button = document.getElementById('ts_toggle_button');
 var ts_save_button = document.getElementById('ts_save_button');
 var ts_undo_button = document.getElementById('ts_undo_button');
@@ -23,6 +25,16 @@ var ctx = canvas.getContext('2d');
 canvas.onselectstart = function () {
     return false;
 };
+
+function init(){
+    var w=window.innerWidth/4;
+    var h=window.innerHeight/4;
+    ts_crop_field.style.left=w+'px';
+    ts_crop_field.style.top=h+'px';
+    ts_crop_field.style.width=w*2+'px';
+    ts_crop_field.style.height=h*2+'px';
+    resize();
+}
 
 function update_pen_settings() {
     ctx.lineJoin = ctx.lineCap = 'round';
@@ -43,11 +55,38 @@ function change_stroke(){
     }
 }
 
-function save_canvas(){
+function crop_canvas(){
     if(ts_save_button.className==="active"){
-        data=canvas.toDataURL('image/png',1);
-        tsCallback.saveCanvas(data);
+        toggleSaveMode(); //On
+        tsCallback.tooltip("Select save area");
     }
+}
+
+function save_canvas(){
+    toggleSaveMode(); //Off
+    sx=parseInt(ts_crop_field.style.left);
+    sy=parseInt(ts_crop_field.style.top);
+    sw=parseInt(ts_crop_field.style.width);
+    sh=parseInt(ts_crop_field.style.height);
+    tmpImg=ctx.getImageData(sx,sy,sw,sh);
+
+    ctx.canvas.width=sw;
+    ctx.canvas.height=sh;
+    ctx.putImageData(tmpImg,0,0);
+    data=canvas.toDataURL('image/png',1);
+    tsCallback.saveCanvas(data);
+    resize();
+}
+
+function toggleSaveMode(){
+    if(saveMode){
+        ts_crop_field.hidden=1;
+        ts_save_button.style.backgroundColor="";
+    }else{
+        ts_crop_field.hidden=0;
+        ts_save_button.style.backgroundColor ="rgba(250,0,0,0.5) !important";
+    }
+    saveMode=!saveMode;
 }
 
 function switch_off_buttons(turn_off) {
@@ -79,17 +118,18 @@ function switch_visibility(signal) {
 }
 
 function resize() {
-    var card = document.getElementsByClassName('card')[0]
+    // var card = document.getElementsByClassName('card')[0]
     // ctx.canvas.width = document.documentElement.scrollWidth - 1;
-    // ctx.canvas.height = Math.max(
-        // document.body.clientHeight,
-        // window.innerHeight,
+    ctx.canvas.height = Math.max(
+        document.body.clientHeight,
+        window.innerHeight
         // document.documentElement ? document.documentElement.scrollHeight : 0,
         // card ? card.scrollHeight : 0
     // ) - 1;
+    );
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ts_redraw()
+    // canvas.height = window.innerHeight;
+    ts_redraw();
 }
 
 function clear_canvas(reset) {
@@ -152,52 +192,78 @@ function ts_draw(fromX,fromY,toX,toY) {
 }
 
 function getMousePos(e) {
-    return {x:e.offsetX, y:e.offsetY};
+    return {x:e.pageX, y:e.pageY};
 }
+
+function calCropField(x,y) {
+    var sx = Math.min(ts_crop_field.x,x);
+    var sw = Math.max(ts_crop_field.x,x);
+    var sy = Math.min(ts_crop_field.y,y);
+    var sh = Math.max(ts_crop_field.y,y);
+    ts_crop_field.style.left = sx + 'px';
+    ts_crop_field.style.top = sy + 'px';
+    ts_crop_field.style.width = sw - sx + 'px';
+    ts_crop_field.style.height = sh - sy + 'px';
+}
+
+
 
 $('input').on(DEVICE+'down', function(e) {
     e.preventDefault(); //prevent focus on btn clicks
 });
 
 window.addEventListener(DEVICE+"up", function (e) {
-    isMouseDown = false;
+    isMouseDown=false;
     ts_redraw();
+    if(saveMode){
+        save_canvas();
+    }
 });
 
 window.addEventListener(DEVICE+"out", function (e) {
-    isMouseDown = false;
+    isMouseDown=false;
     ts_redraw();
 });
 
 canvas.addEventListener(DEVICE+"down", function (e) {
     if(!visible || e.which!==1) return;
     e.preventDefault();
-    isMouseDown = true;
-    update_pen_settings();
-    lst_pos=pos=getMousePos(e);
-    var dot={x:pos.x,y:pos.y-1};
-    op_stack.push(new Array());
-    lst=op_stack.length-1 //dynamic
-    op_stack[lst].push([ts_color,ts_width]);
-    op_stack[lst].push(dot);
-    op_stack[lst].push(pos);
-    ts_draw(dot.x,dot.y,pos.x,pos.y);
-    ts_undo_button.className = "active";
-    ts_save_button.className = "active";
+    isMouseDown=true;
+    pos=lst_pos=getMousePos(e);
+    if(saveMode){
+        ts_crop_field.x=pos.x;
+        ts_crop_field.y=pos.y;
+    }else{
+        update_pen_settings();
+        var dot={x:pos.x,y:pos.y-1};
+        op_stack.push(new Array());
+        lst=op_stack.length-1 //dynamic
+        op_stack[lst].push([ts_color,ts_width]);
+        op_stack[lst].push(dot);
+        op_stack[lst].push(pos);
+        ts_draw(dot.x,dot.y,pos.x,pos.y);
+        ts_undo_button.className = "active";
+        ts_save_button.className = "active";
+    }
 });
 
 canvas.addEventListener(DEVICE+"move", function (e) {
+    pos=getMousePos(e);
     if(isMouseDown && visible) {
-        pos=getMousePos(e);
-        lst=op_stack.length-1 //dynamic
-        op_stack[lst].push(pos);
+        if(saveMode){
+            calCropField(pos.x,pos.y);
+        }else{
+            lst=op_stack.length-1 //dynamic
+            op_stack[lst].push(pos);
+        }
     }
 });
 
 
-setTimeout(resize,0); //sets init card in reviewer
+
+setTimeout(init,0); //sets init card in reviewer
 window.addEventListener('resize', resize);
-document.body.addEventListener('load', resize);
+document.body.addEventListener('load', init);
 
 
 // Uses requestAnimationFrame to animate
@@ -213,7 +279,7 @@ window.requestAnimationFrameWrapper = (function (callback) {
 })();
 
 function updateCanvas() {
-    if(isMouseDown && visible) {
+    if(!saveMode && isMouseDown && visible) {
         ts_draw(lst_pos.x,lst_pos.y,pos.x,pos.y);
         lst_pos=pos;
     }
