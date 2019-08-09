@@ -27,7 +27,10 @@ def importDataURL(txt):
 def saveCanvasAsPNG(card, field, data):
     fileName=importDataURL(data)
     n=card.note()
-    n[field]+='<img src="%s">'%fileName
+    ts_opacity=mw.pm.profile.get('ts_opacity',0.7)
+    n[field]+='''
+<img src="%s" style="opacity:%s;">
+'''%(fileName,ts_opacity)
     n.flush()
     tooltip("Doodle appended to %s"%field,1500)
 
