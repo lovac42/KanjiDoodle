@@ -38,28 +38,16 @@ class Menu:
         self.mOpacity = QAction(_('Set Canvas &Opacity'),mw)
         self.mOpacity.triggered.connect(chooseOpacity)
 
-        self.mColor = QAction(_('Set &Pen Color'),mw)
-        self.mColor.triggered.connect(chooseColor)
-
-        self.mWidth = QAction(_('Set Pen &Width'),mw)
-        self.mWidth.triggered.connect(chooseWidth)
-
         subMenu.addAction(self.mSwitch)
         subMenu.addSeparator()
         subMenu.addAction(self.mOpacity)
-        subMenu.addAction(self.mColor)
-        subMenu.addAction(self.mWidth)
         menu.addMenu(subMenu)
 
 
     def toggleState(self):
         state=self.mSwitch.isChecked()
         mw.pm.profile['ts_state_on']=state
-
-        self.mColor.setEnabled(state)
-        self.mWidth.setEnabled(state)
         self.mOpacity.setEnabled(state)
-
         if mw.state=='review':
             s='false' if state else 'true'
             mw.reviewer.web.eval('init_visibility(false);switch_off_buttons(%s);'%s)
@@ -68,11 +56,7 @@ class Menu:
     def initState(self):
         state=mw.pm.profile.get('ts_state_on',True)
         self.mSwitch.setChecked(state)
-
-        self.mColor.setEnabled(state)
-        self.mWidth.setEnabled(state)
         self.mOpacity.setEnabled(state)
-
 
     def isEnabled(self):
         return self.mSwitch.isChecked()
