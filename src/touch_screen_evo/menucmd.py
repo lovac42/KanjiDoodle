@@ -9,7 +9,7 @@ from aqt import mw
 from aqt.qt import *
 from anki.lang import _
 
-from .forms import getfield
+from .forms import getfield, getnumber
 from .utils import saveCanvasAsPNG
 
 
@@ -24,16 +24,20 @@ def chooseColor():
             mw.reviewer.web.eval("ts_color='%s';update_pen_settings();"%cor)
 
 def chooseWidth():
-    ts_width=mw.pm.profile.get('ts_width',5)
-    val,ok=QInputDialog.getDouble(mw,
-        "Canvas Pen Size","Enter the width:",
-        ts_width,min=0.1,max=250
-    )
-    if ok:
-        val=max(0.1,val)
+    def changeWidth(val):
         mw.pm.profile['ts_width']=val
         if mw.state=='review':
             mw.reviewer.web.eval("ts_width='%s';update_pen_settings();"%val)
+
+    ts_width=mw.pm.profile.get('ts_width',5)
+    diag=QDialog(mw)
+    form=getnumber.Ui_Dialog()
+    form.setupUi(diag)
+    diag.show()
+    form.input.setValue(ts_width)
+    form.input.valueChanged.connect(
+        lambda: changeWidth(form.input.value())
+    )
 
 def chooseOpacity():
     ts_opacity=mw.pm.profile.get('ts_opacity',0.7)
