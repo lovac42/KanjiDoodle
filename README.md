@@ -15,3 +15,5 @@ This is my own OOP version rewritten based on TouchScreen v0.2.6 by krassowski h
 ### Screenshots:
 
 <img src="https://github.com/lovac42/TouchScreenEvo/blob/master/screenshots/doraemon.png?raw=true">  
+
+<img src="https://github.com/lovac42/TouchScreenEvo/blob/master/screenshots/kanji.png?raw=true">  

@@ -22,7 +22,7 @@ var canvas = document.getElementById('ts_canvas');
 var ctx = canvas.getContext('2d');
 
 
-canvas.onselectstart = function () {
+canvas.onselectstart = function() {
     return false;
 };
 
@@ -55,48 +55,50 @@ function change_stroke(){
     }
 }
 
-function crop_canvas(){
-    if(ts_save_button.className==="active"){
-        toggleSaveMode(); //On
-        tsCallback.tooltip("Select save area");
-    }
-}
-
 function save_canvas(){
-    toggleSaveMode(); //Off
-    sx=parseInt(ts_crop_field.style.left);
-    sy=parseInt(ts_crop_field.style.top);
-    sw=parseInt(ts_crop_field.style.width);
-    sh=parseInt(ts_crop_field.style.height);
-    tmpImg=ctx.getImageData(sx,sy,sw,sh);
+    if($(ts_save_button).hasClass("active")) {
+        if(saveMode){
+            sx=parseInt(ts_crop_field.style.left);
+            sy=parseInt(ts_crop_field.style.top);
+            sw=parseInt(ts_crop_field.style.width);
+            sh=parseInt(ts_crop_field.style.height);
+            tmpImg=ctx.getImageData(sx,sy,sw,sh);
 
-    ctx.canvas.width=sw;
-    ctx.canvas.height=sh;
-    ctx.putImageData(tmpImg,0,0);
-    data=canvas.toDataURL('image/png',1);
-    tsCallback.saveCanvas(data);
-    resize();
+            ctx.canvas.width=sw;
+            ctx.canvas.height=sh;
+            ctx.putImageData(tmpImg,0,0);
+            data=canvas.toDataURL('image/png',1);
+            resize();
+            tsCallback.saveCanvas(data);
+            toggleSaveMode(true);
+        }else{
+            tsCallback.tooltip("Select save area");
+            toggleSaveMode();
+        }
+    }
 }
 
-function toggleSaveMode(){
-    if(saveMode){
+function toggleSaveMode(reset){
+    if(saveMode || reset){
+        saveMode=false;
         ts_crop_field.hidden=1;
-        ts_save_button.style.backgroundColor="";
+        $(ts_save_button).removeClass('save');
     }else{
+        saveMode=true;
         ts_crop_field.hidden=0;
-        ts_save_button.style.backgroundColor ="rgba(250,0,0,0.5) !important";
+        $(ts_save_button).addClass('save');
     }
-    saveMode=!saveMode;
 }
 
 function switch_off_buttons(turn_off) {
     if(turn_off){
         canvas_wrapper.style.display = 'none';
-        tsCallback.signal(false);
+        toggleSaveMode(true);
     } else {
         canvas_wrapper.style.display = 'block';
         tsCallback.signal(visible);
     }
+    tsCallback.signal(false);
 }
 
 function init_visibility(signal) {
@@ -115,6 +117,7 @@ function switch_visibility(signal) {
 
     if(signal)
         tsCallback.signal(visible);
+        toggleSaveMode(true);
 }
 
 function resize() {
@@ -140,6 +143,7 @@ function clear_canvas(reset) {
             ts_undo_button.className = "";
             ts_save_button.className = "";
             canvas.style.display = 'block';
+            toggleSaveMode(true);
         }
     }
 }
@@ -164,7 +168,7 @@ function midPointBtw(p1, p2) {
 
 function ts_redraw() {
     ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height);
-    // update_pen_settings();
+    update_pen_settings();
     for(var p=0; p<op_stack.length; p++) {
         ctx.strokeStyle = op_stack[p][0][0];
         ctx.lineWidth = op_stack[p][0][1];
@@ -215,9 +219,6 @@ $('input').on(DEVICE+'down', function(e) {
 window.addEventListener(DEVICE+"up", function (e) {
     isMouseDown=false;
     ts_redraw();
-    if(saveMode){
-        save_canvas();
-    }
 });
 
 window.addEventListener(DEVICE+"out", function (e) {
