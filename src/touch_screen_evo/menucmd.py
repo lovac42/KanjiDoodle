@@ -24,10 +24,10 @@ def chooseColor():
             mw.reviewer.web.eval("ts_color='%s';update_pen_settings();"%cor)
 
 def chooseWidth():
-    width=mw.pm.profile.get('ts_width',5)
+    ts_width=mw.pm.profile.get('ts_width',5)
     val,ok=QInputDialog.getDouble(mw,
-        "Touch Screen","Enter the width:",
-        width,min=0.1,max=250
+        "Canvas Pen Size","Enter the width:",
+        ts_width,min=0.1,max=250
     )
     if ok:
         val=max(0.1,val)
@@ -37,10 +37,10 @@ def chooseWidth():
 
 def chooseOpacity():
     ts_opacity=mw.pm.profile.get('ts_opacity',0.7)
-    val,ok=QInputDialog.getDouble(
-        mw,"Touch Screen",
-        "Enter the opacity (100 = transparent, 0 = opaque):",
-        100*ts_opacity,0,100,2
+    val,ok=QInputDialog.getInt(
+        mw,"Canvas Opacity Settings",
+        "Enter the opacity (0 = transparent, 100 = opaque):",
+        100*ts_opacity,0,100,step=5
     )
     if ok:
         op=val/100.0
