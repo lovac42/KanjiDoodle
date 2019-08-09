@@ -7,6 +7,7 @@
 import os
 import base64
 from anki.utils import intTime
+from aqt.utils import tooltip
 from aqt import mw
 
 
@@ -28,6 +29,8 @@ def saveCanvasAsPNG(card, field, data):
     n=card.note()
     n[field]+='<img src="%s">'%fileName
     n.flush()
+    tooltip("Doodle appended to %s"%field,1500)
+
     #Force refresh w/o loosing card
     mw.reviewer.card=mw.col.getCard(card.id)
     mw.reviewer.card.startTimer()
