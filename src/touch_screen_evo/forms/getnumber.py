@@ -11,8 +11,6 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(150, 40)
-        self.horizontalLayout = QtWidgets.QHBoxLayout(Dialog)
-        self.horizontalLayout.setObjectName("horizontalLayout")
         self.gridLayout = QtWidgets.QGridLayout(Dialog)
         self.gridLayout.setObjectName("gridLayout")
 
@@ -32,7 +30,6 @@ class Ui_Dialog(object):
         self.dnArrow.clicked.connect(self.dec)
         self.gridLayout.addWidget(self.dnArrow, 1, 1, 1, 1)
 
-        self.horizontalLayout.addLayout(self.gridLayout)
         self.retranslateUi(Dialog)
 
     def retranslateUi(self, Dialog):

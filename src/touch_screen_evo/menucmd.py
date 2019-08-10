@@ -9,19 +9,26 @@ from aqt import mw
 from aqt.qt import *
 from anki.lang import _
 
-from .forms import getfield, getnumber
+from .forms import getfield, getnumber, getcolor
 from .utils import saveCanvasAsPNG
 
 
 def chooseColor():
+    def liveColor(qcolor):
+        if qcolor.isValid():
+            cor=qcolor.name()
+            mw.pm.profile['ts_color']=cor
+            if mw.state=='review':
+                mw.reviewer.web.eval("ts_color='%s';update_pen_settings();"%cor)
+
+    diag=QDialog(mw)
+    form=getcolor.Ui_Dialog()
+    form.setupUi(diag)
     cor=mw.pm.profile.get('ts_color',"#f0f")
-    qcolor_old=QColor(cor)
-    qcolor=QColorDialog.getColor(qcolor_old)
-    if qcolor.isValid():
-        cor=qcolor.name()
-        mw.pm.profile['ts_color']=cor
-        if mw.state=='review':
-            mw.reviewer.web.eval("ts_color='%s';update_pen_settings();"%cor)
+    form.color.setCurrentColor(QColor(cor))
+    form.color.currentColorChanged.connect(liveColor)
+    diag.show()
+
 
 def chooseWidth():
     def changeWidth(val):
@@ -39,6 +46,7 @@ def chooseWidth():
         lambda: changeWidth(form.input.value())
     )
 
+
 def chooseOpacity():
     ts_opacity=mw.pm.profile.get('ts_opacity',0.7)
     val,ok=QInputDialog.getInt(
@@ -51,6 +59,7 @@ def chooseOpacity():
         mw.pm.profile['ts_opacity']=op
         if mw.state=='review':
             mw.reviewer.web.eval("canvas.style.opacity=%s;"%str(op))
+
 
 def chooseSaveField(data):
     card=mw.reviewer.card
