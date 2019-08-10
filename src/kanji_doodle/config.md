@@ -1,3 +1,3 @@
-#Touch Screen Evo
+#Kanji Doodle
 
 Changing hotkeys requires restart.

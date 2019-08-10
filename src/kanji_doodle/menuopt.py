@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2019 Lovac42
 # Copyright (C) 2018-2019 Michal Krassowski <krassowski.michal@gmail.com>
-# Support: https://github.com/lovac42/TouchScreenEvo
+# Support: https://github.com/lovac42/KanjiDoodle
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 
@@ -27,9 +27,9 @@ class Menu:
                 break
         if not menu:
             menu=mw.form.menubar.addMenu('&View')
-        subMenu=QMenu('&Touchscreen',menu)
+        subMenu=QMenu('&Kanji Doodle',menu)
 
-        self.mSwitch=QAction(_('&Enable Touch Screen'),mw,checkable=True)
+        self.mSwitch=QAction(_('&Enable Kanji Doodle'),mw,checkable=True)
         hotkey=self.config.get('hotkey')
         if hotkey:
             self.mSwitch.setShortcut(QKeySequence(hotkey))
