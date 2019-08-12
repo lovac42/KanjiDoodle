@@ -5,7 +5,11 @@ Touch screen functionality for Anki. Featured changes include changing colors, c
 
 
 ### Addon Conflict:
-Works with NightMode, but this addon must be loaded first before NightMode loads. This is a problem with NM.
+Works with NightMode, but this addon must be loaded first before NightMode loads. This is a problem with NM. The original code uses a hacky trick to get around this issue, but I found that it often causes freezing and avoided using it. Ensuring that NM loads last is by renaming NM with a z prefix is enough to avoid this conflict.
+
+
+### Saving:
+To save, click on save, select the desired crop area, then click on the red highlighted save button again. A dialog will open asking you which field to append the new image to.
 
 
 ### Credits:
