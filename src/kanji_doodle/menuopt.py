@@ -10,12 +10,14 @@ from anki.lang import _
 from anki.hooks import addHook
 from aqt.qt import *
 
+from .const import ADDON_NAME
 from .menucmd import chooseColor, chooseWidth, chooseOpacity
 
 
 class Menu:
     def __init__(self, config):
         addHook("profileLoaded", self.initState)
+        addHook(ADDON_NAME+".configUpdated", self.configUpdated)
         self.config=config
         self.setupMenu()
 
@@ -61,3 +63,7 @@ class Menu:
     def isEnabled(self):
         return self.mSwitch.isChecked()
 
+    def configUpdated(self):
+        hotkey=self.config.get('hotkey')
+        if hotkey:
+            self.mSwitch.setShortcut(QKeySequence(hotkey))
