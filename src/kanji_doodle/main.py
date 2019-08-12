@@ -94,8 +94,10 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
     def getBody(self):
         c="var ts_color='%s';"%mw.pm.profile.get('ts_color','#f0f')
         w="var ts_width='%s';"%mw.pm.profile.get('ts_width','5')
+        tf=self.config.get("live_update")
+        q="var live_update=%s;"%("true" if tf else "false")
         return """
 <style>%s</style>%s
-<script>%s%s%s%s</script>
-"""%(CSS,HTML,DEVICE,c,w,JS)
+<script>%s%s%s%s%s</script>
+"""%(CSS,HTML,DEVICE,q,c,w,JS)
 

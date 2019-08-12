@@ -67,3 +67,4 @@ class Menu:
         hotkey=self.config.get('hotkey')
         if hotkey:
             self.mSwitch.setShortcut(QKeySequence(hotkey))
+        mw.reset()

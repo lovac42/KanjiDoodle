@@ -1,3 +1,4 @@
 {
-	"hotkey": "Ctrl+R"
+	"hotkey": "Ctrl+R",
+	"live_update": true
 }

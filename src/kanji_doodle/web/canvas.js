@@ -218,12 +218,14 @@ $('input').on(DEVICE+'down', function(e) {
 
 window.addEventListener(DEVICE+"up", function (e) {
     isMouseDown=false;
-    ts_redraw();
+    if(live_update)
+        ts_redraw();
 });
 
 window.addEventListener(DEVICE+"out", function (e) {
     isMouseDown=false;
-    ts_redraw();
+    if(live_update)
+        ts_redraw();
 });
 
 canvas.addEventListener(DEVICE+"down", function (e) {
