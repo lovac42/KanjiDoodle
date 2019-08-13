@@ -11,6 +11,11 @@ Works with NightMode, but this addon must be loaded first before NightMode loads
 ### Saving:
 To save, click on save, select the desired crop area, then click on the red highlighted save button again. A dialog will open asking you which field to append the new image to.
 
+### Device:
+Should be Wacom compatible. https://www.amazon.com/dp/B01BA6XQI0  
+
+### Pen Pressure and Tilt Function:
+Still under development.
 
 ### Credits:
 This is my own OOP version rewritten based on TouchScreen v0.2.6 by krassowski https://github.com/krassowski/Anki-TouchScreen
@@ -21,3 +26,9 @@ This is my own OOP version rewritten based on TouchScreen v0.2.6 by krassowski h
 <img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/doraemon.png?raw=true">  
 
 <img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/kanji.png?raw=true">  
+
+<img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/cat.png?raw=true">  
+
+<img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/fire.png?raw=true">  
+
+<img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/calligraphy.png?raw=true">  

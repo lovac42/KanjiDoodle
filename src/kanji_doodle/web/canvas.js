@@ -252,13 +252,8 @@ canvas.addEventListener(DEVICE+"down", function (e) {
 
 canvas.addEventListener(DEVICE+"move", function (e) {
     pos=getMousePos(e);
-    if(isMouseDown && visible) {
-        if(saveMode){
-            calCropField(pos.x,pos.y);
-        }else{
-            lst=op_stack.length-1 //dynamic
-            op_stack[lst].push(pos);
-        }
+    if(saveMode && isMouseDown && visible) {
+        calCropField(pos.x,pos.y);
     }
 });
 
@@ -283,6 +278,9 @@ window.requestAnimationFrameWrapper = (function (callback) {
 
 function updateCanvas() {
     if(!saveMode && isMouseDown && visible) {
+        lst=op_stack.length-1 //dynamic
+        op_stack[lst].push(pos);
+
         ts_draw(lst_pos.x,lst_pos.y,pos.x,pos.y);
         lst_pos=pos;
     }
