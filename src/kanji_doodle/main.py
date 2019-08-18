@@ -23,6 +23,7 @@ class KanjiDoodle:
 
     def __init__(self):
         addHook("showQuestion", self.onShowQuestion)
+        addHook("showAnswer", self.onShowAnswer)
         addHook(ADDON_NAME+".configLoaded", self.onConfigLoaded)
         # addHook(ADDON_NAME+".configUpdated", self.configUpdated)
         self.config=Config(ADDON_NAME)
@@ -90,6 +91,9 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
             self.eval('init_visibility(false);init_visibility(true);')
         else:
             self.eval('switch_off_buttons(true);')
+
+    def onShowAnswer(self):
+        self.eval('resize();')
 
     def getBody(self):
         c="var ts_color='%s';"%mw.pm.profile.get('ts_color','#f0f')
