@@ -30,7 +30,6 @@ def showEditorFrame(editor):
 
 
 def onEditor20(editor):
-    print("on edit")
     editor._addButton("kanji-doodle",
         lambda:showEditorFrame(editor),
         "", shortcut(_("Kanji Doodle")),
