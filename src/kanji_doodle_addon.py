@@ -1,0 +1,1 @@
+from kanji_doodle import *

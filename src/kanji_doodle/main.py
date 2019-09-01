@@ -11,7 +11,7 @@ from anki.hooks import addHook, wrap
 from aqt.reviewer import Reviewer
 from aqt.qt import *
 
-from .const import ADDON_NAME, CCBC as isCCBC
+from .const import ADDON_NAME, ANKI20, CCBC
 from .config import Config
 from .callbacks import Callback
 from .menuopt import Menu
@@ -19,14 +19,16 @@ from .const import *
 
 
 class KanjiDoodle:
+    config=Config(ADDON_NAME)
     state=None
 
-    def __init__(self):
+    def __init__(self, web, parent=None):
+        self.web=web
+        self.parent=parent
         addHook("showQuestion", self.onShowQuestion)
         addHook("showAnswer", self.onShowAnswer)
         addHook(ADDON_NAME+".configLoaded", self.onConfigLoaded)
         # addHook(ADDON_NAME+".configUpdated", self.configUpdated)
-        self.config=Config(ADDON_NAME)
 
     def onConfigLoaded(self):
         if not self.state:
@@ -34,15 +36,15 @@ class KanjiDoodle:
         self.setupCallbacks()
 
     def setupCallbacks(self):
-        self.tsCallback=Callback()
-        if isCCBC:
-            self.addCallback=mw.reviewer.web.page().mainFrame().addToJavaScriptWindowObject
+        self.tsCallback=Callback(self.web,self.parent)
+        if CCBC or ANKI20:
+            self.addCallback=self.web.page().mainFrame().addToJavaScriptWindowObject
         else:
             self.loadUserScript()
-        self.eval=mw.reviewer.web.eval
+        self.eval=self.web.eval
 
     def loadUserScript(self):
-        mw.reviewer.web.page()._channel.registerObject("tsCallback",self.tsCallback)
+        self.web.page()._channel.registerObject("tsCallback",self.tsCallback)
         js = QFile(':/qtwebchannel/qwebchannel.js')
         assert js.open(QIODevice.ReadOnly)
         js = bytes(js.readAll()).decode('utf-8')
@@ -74,15 +76,15 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
     }catch(TypeError){;}
 });
         ''')
-        mw.reviewer.web.page().profile().scripts().insert(script)
+        self.web.page().profile().scripts().insert(script)
 
     def onShowQuestion(self):
-        if isCCBC:
+        if CCBC or ANKI20:
             self.addCallback("tsCallback", self.tsCallback)
 
         self.eval('clear_canvas(true);')
 
-        if self.state.isEnabled():
+        if not self.state or self.state.isEnabled():
             op=mw.pm.profile.get('ts_opacity',0.7)
             self.eval("canvas.style.opacity=%s;"%str(op))
 

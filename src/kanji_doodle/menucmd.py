@@ -7,21 +7,21 @@
 
 from aqt import mw
 from aqt.qt import *
+from aqt.utils import tooltip
 from anki.lang import _
 
 from .forms import getfield, getnumber, getcolor
 from .utils import saveCanvasAsPNG
 
 
-def chooseColor():
+def chooseColor(web):
     def liveColor(qcolor):
         if qcolor.isValid():
             cor=qcolor.name()
             mw.pm.profile['ts_color']=cor
-            if mw.state=='review':
-                mw.reviewer.web.eval("ts_color='%s';update_pen_settings();"%cor)
+            web.eval("ts_color='%s';update_pen_settings();"%cor)
 
-    diag=QDialog(mw)
+    diag=QDialog(web)
     form=getcolor.Ui_Dialog()
     form.setupUi(diag)
     cor=mw.pm.profile.get('ts_color',"#f0f")
@@ -30,14 +30,13 @@ def chooseColor():
     diag.show()
 
 
-def chooseWidth():
+def chooseWidth(web):
     def changeWidth(val):
         mw.pm.profile['ts_width']=val
-        if mw.state=='review':
-            mw.reviewer.web.eval("ts_width='%s';update_pen_settings();"%val)
+        web.eval("ts_width='%s';update_pen_settings();"%val)
 
     ts_width=mw.pm.profile.get('ts_width',5)
-    diag=QDialog(mw)
+    diag=QDialog(web)
     form=getnumber.Ui_Dialog()
     form.setupUi(diag)
     diag.show()
@@ -63,16 +62,37 @@ def chooseOpacity():
 
 def chooseSaveField(data):
     card=mw.reviewer.card
-    if card:
-        diag=QDialog(mw)
-        form=getfield.Ui_Dialog()
-        form.setupUi(diag)
-        fields=[f['name'] for f in card.model()['flds']]
-        form.fields.addItems(fields)
-        diag.show()
-        #If errors occur on linux, see old bug (qt4.8.4 or below)
-        #https://bugreports.qt-project.org/browse/QTBUG-1894
-        form.fields.showPopup()
-        if diag.exec_():
-            fieldName=fields[form.fields.currentIndex()]
-            saveCanvasAsPNG(card,fieldName,data)
+
+    diag=QDialog(mw)
+    form=getfield.Ui_Dialog()
+    form.setupUi(diag)
+    fields=[f['name'] for f in card.model()['flds']]
+    form.fields.addItems(fields)
+    diag.show()
+
+    #If errors occur on linux, see old bug (qt4.8.4 or below)
+    #https://bugreports.qt-project.org/browse/QTBUG-1894
+    form.fields.showPopup()
+    if diag.exec_():
+        imgTag=saveCanvasAsPNG(data)
+        n=card.note()
+        fn=fields[form.fields.currentIndex()]
+        n[fn]+=imgTag
+        n.flush()
+        tooltip("Doodle appended to %s"%fn,1500)
+
+        #Force refresh w/o loosing card
+        mw.reviewer.card=mw.col.getCard(card.id)
+        mw.reviewer.card.startTimer()
+        mw.reviewer._showQuestion()
+
+
+def saveFieldToEditor(data, web, editor):
+    imgTag=saveCanvasAsPNG(data)
+    fld=editor.currentField
+    editor.note.fields[fld]+=imgTag
+    editor.loadNote()
+    # focus field so it's saved
+    editor.web.setFocus()
+    editor.web.eval("focusField(%d);"%fld)
+    web.close()

@@ -1,7 +1,7 @@
-#Kanji Doodle
+# Kanji Doodle
 
 ### hotkey
-Changing hotkeys requires restart.
+Changes hotkey for enabling/disabling Kanji Doodle
 
 ### live_update
 true or false

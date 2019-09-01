@@ -212,10 +212,6 @@ function calCropField(x,y) {
 
 
 
-$('input').on(DEVICE+'down', function(e) {
-    e.preventDefault(); //prevent focus on btn clicks
-});
-
 window.addEventListener(DEVICE+"up", function (e) {
     isMouseDown=false;
     if(live_update)
@@ -290,3 +286,19 @@ function updateCanvas() {
     updateCanvas();
     requestAnimationFrameWrapper(start);
 })();
+
+
+
+
+
+/*
+**************************************
+    BELOW CODE WILL NOT WORK ON 2.0
+    Rewrite to non jquery causes freezing.
+**************************************
+*/
+
+$('input').on(DEVICE+'down', function(e) {
+    e.preventDefault(); //prevent focus on btn clicks
+});
+

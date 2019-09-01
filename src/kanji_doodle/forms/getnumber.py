@@ -6,10 +6,11 @@
 
 
 from anki.lang import _
+from ..const import CCBC, ANKI20
 
-try:
+if CCBC or ANKI20:
     from PyQt4 import QtCore, QtGui as QtWidgets
-except:
+else:
     from PyQt5 import QtCore, QtWidgets
 
 
@@ -42,8 +43,8 @@ class Ui_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_("Doodle"))
         self.label.setText(_("Pen Size:"))
-        self.upArrow.setText(_("▲"))
-        self.dnArrow.setText(_("▼"))
+        self.upArrow.setText(_(u"▲"))
+        self.dnArrow.setText(_(u"▼"))
 
     def inc(self):
         v=self.input.value()

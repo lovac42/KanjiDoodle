@@ -6,24 +6,34 @@
 from aqt import mw
 from aqt.qt import *
 from aqt.utils import tooltip
+from aqt.editor import Editor
 from anki.hooks import runHook
 
-from .menucmd import chooseColor, chooseWidth, chooseSaveField
+from .menucmd import chooseColor, chooseWidth, chooseSaveField, saveFieldToEditor
 from .const import ADDON_NAME
 
 
 class Callback(QObject):
+
+    def __init__(self, web, parent=None):
+        QObject.__init__(self)
+        self.web=web
+        self.parent=parent
+
     @pyqtSlot()
     def chooseColor(self):
-        chooseColor()
+        chooseColor(self.web)
 
     @pyqtSlot()
     def chooseWidth(self):
-        chooseWidth()
+        chooseWidth(self.web)
 
     @pyqtSlot(str)
     def saveCanvas(self, data):
-        chooseSaveField(data)
+        if isinstance(self.parent,Editor):
+            saveFieldToEditor(data,self.web,self.parent)
+        elif not self.parent and mw.state=='review':
+            chooseSaveField(data)
 
     @pyqtSlot(str)
     def tooltip(self, msg):

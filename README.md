@@ -32,3 +32,5 @@ This is my own OOP version rewritten based on TouchScreen v0.2.6 by krassowski h
 <img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/fire.png?raw=true">  
 
 <img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/calligraphy.png?raw=true">  
+
+<img src="https://github.com/lovac42/KanjiDoodle/blob/master/screenshots/editor.png?raw=true">  

@@ -4,15 +4,18 @@
 # Support: https://github.com/lovac42/KanjiDoodle
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
+
 ADDON_NAME='KanjiDoodle'
 
 from anki import version
 
 from .utils import readFile
 
+ANKI20=version.startswith("2.0")
+
 CCBC=version.endswith("ccbc")
 
-if CCBC:
+if CCBC or ANKI20:
     DEVICE="const DEVICE='mouse';"
 else:
     DEVICE="const DEVICE='pointer';"
