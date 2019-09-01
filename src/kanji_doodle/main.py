@@ -98,12 +98,16 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
         self.eval('resize();')
 
     def getBody(self):
-        c="var ts_color='%s';"%mw.pm.profile.get('ts_color','#f0f')
-        w="var ts_width='%s';"%mw.pm.profile.get('ts_width','5')
+        c=mw.pm.profile.get('ts_color','#f0f')
+        w=mw.pm.profile.get('ts_width','5')
         tf=self.config.get("live_update")
-        q="var live_update=%s;"%("true" if tf else "false")
+        q="true" if tf else "false"
         return """
 <style>%s</style>%s
-<script>%s%s%s%s%s</script>
-"""%(CSS,HTML,DEVICE,q,c,w,JS)
-
+<script>%s
+var live_update=%s;
+var ts_color='%s';
+var ts_width='%s';
+var pen_width='%s';
+%s</script>
+"""%(CSS,HTML,DEVICE,q,c,w,w,JS)
