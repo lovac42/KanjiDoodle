@@ -4,31 +4,27 @@
 # License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 
-import os, sys, io
+import os, sys
 import base64
 from aqt import mw
 from anki.utils import intTime
 
 PY2=sys.version_info[0]<3
+if PY2:
+    import io
+    open=io.open
 
 
 def readFile(fname):
     addon,_=os.path.split(__file__)
     path=os.path.abspath(os.path.join(addon,fname))
     if os.path.exists(path):
-        if PY2:
-            with io.open(path, encoding='utf-8', errors='ignore') as f:
-                return f.read()
-        else:
-            with open(path, 'r', encoding='utf-8') as f:
-                return f.read()
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read()
 
 def importDataURL(txt):
     b64dat=txt[22:].strip()
-    if PY2:
-        dat=base64.b64decode(b64dat)
-    else:
-        dat=base64.b64decode(b64dat,validate=True)
+    dat=base64.b64decode(b64dat)
     fname=u"%s%d.png"%("canvas",intTime())
     return mw.col.media.writeData(fname,dat)
 

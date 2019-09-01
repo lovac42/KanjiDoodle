@@ -11,14 +11,15 @@ from anki import version
 
 from .utils import readFile
 
-ANKI20=version.startswith("2.0")
-
 CCBC=version.endswith("ccbc")
 
-if CCBC or ANKI20:
-    DEVICE="const DEVICE='mouse';"
-else:
+ANKI21=version.startswith("2.1") and not CCBC
+
+
+if ANKI21:
     DEVICE="const DEVICE='pointer';"
+else:
+    DEVICE="const DEVICE='mouse';"
 
 
 JS=readFile('web/canvas.js')

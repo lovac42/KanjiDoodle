@@ -11,7 +11,7 @@ from anki.hooks import addHook, wrap
 from aqt.reviewer import Reviewer
 from aqt.qt import *
 
-from .const import ADDON_NAME, ANKI20, CCBC
+from .const import ADDON_NAME, ANKI21
 from .config import Config
 from .callbacks import Callback
 from .menuopt import Menu
@@ -37,10 +37,10 @@ class KanjiDoodle:
 
     def setupCallbacks(self):
         self.tsCallback=Callback(self.web,self.parent)
-        if CCBC or ANKI20:
-            self.addCallback=self.web.page().mainFrame().addToJavaScriptWindowObject
-        else:
+        if ANKI21:
             self.loadUserScript()
+        else:
+            self.addCallback=self.web.page().mainFrame().addToJavaScriptWindowObject
         self.eval=self.web.eval
 
     def loadUserScript(self):
@@ -79,7 +79,7 @@ new QWebChannel(qt.webChannelTransport, function(channel) {
         self.web.page().profile().scripts().insert(script)
 
     def onShowQuestion(self):
-        if CCBC or ANKI20:
+        if not ANKI21:
             self.addCallback("tsCallback", self.tsCallback)
 
         self.eval('clear_canvas(true);')

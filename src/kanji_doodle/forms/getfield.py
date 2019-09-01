@@ -6,12 +6,12 @@
 
 
 from anki.lang import _
-from ..const import CCBC, ANKI20
+from ..const import ANKI21
 
-if CCBC or ANKI20:
-    from PyQt4 import QtCore, QtGui as QtWidgets
-else:
+if ANKI21:
     from PyQt5 import QtCore, QtWidgets
+else:
+    from PyQt4 import QtCore, QtGui as QtWidgets
 
 
 class Ui_Dialog(object):
