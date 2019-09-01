@@ -49,7 +49,7 @@ class Menu:
     def toggleState(self):
         state=self.mSwitch.isChecked()
         mw.pm.profile['ts_state_on']=state
-        self.mOpacity.setEnabled(state)
+        # self.mOpacity.setEnabled(state)
         if mw.state=='review':
             s='false' if state else 'true'
             mw.reviewer.web.eval('init_visibility(false);switch_off_buttons(%s);'%s)
@@ -58,7 +58,7 @@ class Menu:
     def initState(self):
         state=mw.pm.profile.get('ts_state_on',True)
         self.mSwitch.setChecked(state)
-        self.mOpacity.setEnabled(state)
+        # self.mOpacity.setEnabled(state)
 
     def isEnabled(self):
         return self.mSwitch.isChecked()
