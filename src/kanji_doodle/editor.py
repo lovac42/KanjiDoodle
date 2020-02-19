@@ -11,6 +11,7 @@ from aqt.utils import shortcut
 from anki.lang import _
 
 from .main import KanjiDoodle
+from .const import ICON
 
 web=AnkiWebView()
 web.setWindowTitle(_("Kanji Doodle"))
@@ -30,18 +31,21 @@ def showEditorFrame(editor):
 
 
 def onEditor20(editor):
-    editor._addButton("kanji-doodle",
+    p=QPixmap()
+    p.loadFromData(QByteArray.fromBase64(ICON))
+    btn=editor._addButton("Kanji Doodle",
         lambda:showEditorFrame(editor),
         "", shortcut(_("Kanji Doodle")),
-        text=_(u"画"), native=True, canDisable=False)
-# The pen icon doesn't show up well, so I'm using kanji.
+        native=True, canDisable=False)
+    btn.setIcon(QIcon(p))
+
 
 def onEditor21(righttopbtns, editor):
     editor._links["kdoodle"]=showEditorFrame
     righttopbtns.append('''<button tabindex=-1 class=linkb 
-title="kanji-doodle" type="button"
+title="Kanji Doodle" type="button"
 onclick="pycmd('kdoodle');return false;">
-<div style="display:inline-block; font-size:24px;"
-class="topbut">✍</div></button>''')
+<div style="display:inline-block; class="topbut">
+<img src="data:image/png;base64,%s" /></div></button>'''%ICON)
     return righttopbtns
 
